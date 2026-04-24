@@ -1,73 +1,121 @@
 const categoryContainer = document.getElementById("categoryContainer")
-
 const treesContainer = document.getElementById("treesContainer")
+const loadingSpinner = document.getElementById("loadingSpinner")
 
+let allPlants = []   //  global data store
+
+// ---------------- LOADING ----------------
+function showLoading() {
+   loadingSpinner.classList.remove("hidden")
+   loadingSpinner.classList.add("flex")
+}
+
+function hideLoading() {
+   loadingSpinner.classList.add("hidden")
+   loadingSpinner.classList.remove("flex")
+}
+
+// ---------------- LOAD CATEGORIES ----------------
 async function loadData() {
-   // console.log("Hello World!")
-
    const res = await fetch("https://openapi.programming-hero.com/api/categories")
    const data = await res.json()
-   // console.log(data)
-   // console.log(categoryContainer)
+
    data.categories.forEach(category => {
-      // console.log(category)
       const btn = document.createElement("button")
-      btn.className = "btn btn-outline  w-full rounded-md"
+      btn.className = "btn btn-outline w-full rounded-md"
       btn.textContent = category.category_name
+
+      //  FIX: pass category name (not id)
+      btn.onclick = () => selectCategory(category.category_name, btn)
+
       categoryContainer.appendChild(btn)
    })
-
 }
 
-async function loadTrees() {
+// ---------------- CATEGORY FILTER ----------------
+async function selectCategory(categoryName, btn) {
+
+   showLoading()
+
+   const allBtns = document.querySelectorAll("#categoryContainer button")
+   allBtns.forEach(b => {
+      b.classList.remove("bg-primaryColor", "text-white")
+      b.classList.add("btn-outline")
+   })
+
+   btn.classList.add("bg-primaryColor", "text-white")
+   btn.classList.remove("btn-outline")
+
+   //  API call once (or reuse global data)
    const res = await fetch("https://openapi.programming-hero.com/api/plants")
    const data = await res.json()
-   //   console.log(data)
-   displayTrees(data.plants)
 
+   const filtered = data.plants.filter(
+      plant => plant.category === categoryName
+   )
+
+   treesContainer.innerHTML = ""
+   displayTrees(filtered)
+
+   hideLoading()
 }
 
-/**
- "status": true,
-  "message": "successfully fetched plants data",
-  "plants": [
-    {
-      "id": 1,
-      "image": "https://i.ibb.co.com/cSQdg7tf/mango-min.jpg",
-      "name": "Mango Tree",
-      "description": "A fast-growing tropical tree that produces delicious, juicy mangoes during summer. Its dense green canopy offers shade, while its sweet fruits are rich in vitamins and minerals.",
-      "category": "Fruit Tree",
-      "price": 500
-    },
-*/
+// ---------------- LOAD ALL TREES ----------------
+async function loadTrees() {
+   showLoading()
 
+   const res = await fetch("https://openapi.programming-hero.com/api/plants")
+   const data = await res.json()
+
+   allPlants = data.plants
+
+   treesContainer.innerHTML = ""
+   displayTrees(allPlants)
+
+   hideLoading()
+}
+
+// ---------------- DISPLAY TREES ----------------
 function displayTrees(trees) {
-   console.log(trees)
-   trees.forEach((tree) => {
-      const card = document.createElement("div")
-      card.innerHTML = `<div class="card bg-white shadow-sm">
-                     <figure>
-                        <img
-                           src="${tree.image}"
-                           alt="${tree.name}" 
-                           class="h-[200px] w-full object-cover"/>
-                     </figure>
-                     <div class="card-body">
-                        <h2 class="card-title">${tree.name}</h2>
-                        <p class="line-clamp-2">${tree.description}</p>
-                           <div class="badge badge-outline  bg-[#DCFCE7] text-[#15803D]">${tree.category}</div>
-                           
-                           <div class="flex justify-between items-center">
-                           <h2 class="text-[14px] font-semibold">৳${tree.price}</h2>
 
-                           <button class="btn bg-primaryColor text-white rounded-full">Add To Cart</button>
-                        </div>
-                     </div>
-                  </div>`
+   treesContainer.innerHTML = ""  
+
+   trees.forEach(tree => {
+      const card = document.createElement("div")
+
+      card.innerHTML = `
+         <div class="card bg-white shadow-sm">
+            <figure>
+               <img 
+                  src="${tree.image}" 
+                  alt="${tree.name}" 
+                  class="h-[200px] w-full object-cover"
+               />
+            </figure>
+
+            <div class="card-body">
+               <h2 class="card-title">${tree.name}</h2>
+               <p class="line-clamp-2">${tree.description}</p>
+
+               <div class="badge badge-outline bg-[#DCFCE7] text-[#15803D]">
+                  ${tree.category}
+               </div>
+
+               <div class="flex justify-between items-center">
+                  <h2 class="text-[14px] font-semibold">৳${tree.price}</h2>
+
+                  <button class="btn bg-primaryColor text-white rounded-full">
+                     Add To Cart
+                  </button>
+               </div>
+            </div>
+         </div>
+      `
+
       treesContainer.appendChild(card)
    })
 }
 
-
+// ---------------- INIT ----------------
 loadData()
 loadTrees()
