@@ -4,7 +4,7 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Green Earth</title>
-
+      <link rel="shortcut icon" href="./assets/favicon.jpeg" type="image/x-icon">
       <!-- tailwind+daisyui  -->
       <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet"
          type="text/css" />
@@ -24,14 +24,28 @@
    </head>
    <body>
       <main class="container mx-auto text-center">
-         <h2 class="font-semibold text-[32px] text-[#1F2937]">Choose Your Trees</h2>
+         <h2 class="font-semibold text-[32px] text-[#1F2937]">Choose Your
+            Trees</h2>
          <div class="grid grid-cols-12 gap-8">
-            <div class="bg-yellow-500 col-span-3">Categories</div>
-            <div class="bg-yellow-500 col-span-6">Tree Selection</div>
-            <div class="bg-yellow-500 col-span-3">Cart</div>
+
+            <div class="bg-white card card-body shadow col-span-3">
+               <h3 class="text-[20px] font-semibold">Categories</h3>
+               <div class="space-y-2">
+                  <button id="allTreesbtn" class="btn bg-primaryColor w-full rounded-md text-white">All Trees</button>
+
+                  <div id="categoryContainer" class="space-y-2">
+
+                  </div>
+
+               </div>
+            </div>
+            <div class="bg-red-500 col-span-6">
+               Trees
+            </div>
+            <div class="bg-yellow-500 col-span-3">
+               Cart
+            </div>
          </div>
-
-
 
       </main>
       <script src="./JS/script.js"></script>
