@@ -2,6 +2,9 @@ const categoryContainer = document.getElementById("categoryContainer")
 const treesContainer = document.getElementById("treesContainer")
 const loadingSpinner = document.getElementById("loadingSpinner")
 
+
+
+
 let allPlants = []   //  global data store
 
 // ---------------- LOADING ----------------
@@ -60,6 +63,8 @@ async function selectCategory(categoryName, btn) {
    hideLoading()
 }
 
+
+
 // ---------------- LOAD ALL TREES ----------------
 async function loadTrees() {
    showLoading()
@@ -74,6 +79,32 @@ async function loadTrees() {
 
    hideLoading()
 }
+
+
+// ---------------- ALL TREES BUTTON (FIX) ----------------
+document.getElementById("allTreesbtn").addEventListener("click", () => {
+
+   showLoading()
+
+   const allBtns = document.querySelectorAll("#categoryContainer button")
+
+   // সব category button reset
+   allBtns.forEach(b => {
+      b.classList.remove("bg-primaryColor", "text-white")
+      b.classList.add("btn-outline")
+   })
+
+   // 👉 ALL button active style
+   const allBtn = document.getElementById("allTreesbtn")
+   allBtn.classList.add("bg-primaryColor", "text-white")
+
+   // 👉 সব data দেখাও (global store থেকে)
+   treesContainer.innerHTML = ""
+   displayTrees(allPlants)
+
+   hideLoading()
+})
+
 
 // ---------------- DISPLAY TREES ----------------
 function displayTrees(trees) {
