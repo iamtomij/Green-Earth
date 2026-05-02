@@ -1,7 +1,12 @@
 const categoryContainer = document.getElementById("categoryContainer")
 const treesContainer = document.getElementById("treesContainer")
 const loadingSpinner = document.getElementById("loadingSpinner")
-
+const treeModal = document.getElementById("treeModal")
+const modalImage = document.getElementById("modalImage")
+const modalCategory = document.getElementById("modalCategory")
+const modalPrice = document.getElementById("modalPrice")
+const modalDescription = document.getElementById("modalDescription")
+const modalTitle = document.getElementById("modalTitle")
 
 
 
@@ -109,7 +114,7 @@ document.getElementById("allTreesbtn").addEventListener("click", () => {
 // ---------------- DISPLAY TREES ----------------
 function displayTrees(trees) {
 
-   treesContainer.innerHTML = ""  
+   treesContainer.innerHTML = ""
 
    trees.forEach(tree => {
       const card = document.createElement("div")
@@ -125,7 +130,7 @@ function displayTrees(trees) {
             </figure>
 
             <div class="card-body">
-               <h2 class="card-title">${tree.name}</h2>
+               <h2 class="card-title cursor-pointer hover:text-[#15803D]" onclick="openTreeModal(${tree.id})">${tree.name}</h2>
                <p class="line-clamp-2">${tree.description}</p>
 
                <div class="badge badge-outline bg-[#DCFCE7] text-[#15803D]">
@@ -147,6 +152,19 @@ function displayTrees(trees) {
    })
 }
 
-// ---------------- INIT ----------------
+async function openTreeModal(treeId) {
+  const res = await fetch(
+    `https://openapi.programming-hero.com/api/plant/${treeId}`,
+  );
+  const data = await res.json();
+  const plantDetails = data.plants;
+  modalTitle.textContent = plantDetails.name;
+  modalImage.src = plantDetails.image;
+  modalCategory.textContent = plantDetails.category;
+  modalDescription.textContent = plantDetails.description;
+  modalPrice.textContent = plantDetails.price;
+  treeModal.showModal();
+}
+
 loadData()
 loadTrees()
