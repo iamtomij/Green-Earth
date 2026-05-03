@@ -59,13 +59,42 @@
 
                </div>
             </div>
-            <div class="bg-white card card-body shadow-2xl col-span-3">
-               Cart
+
+            <div class="bg-white card card-body shadow-2xl col-span-3 static">
+               <h2 class="text-[20px] font-semibold">Your Cart</h2>
+               <div class="space-y-4">
+                  <div id="cartContainer" class="space-y-4">
+                     <!-- <div class=" bg-[#F0FDF4] rounded-xl cart card-body">
+                        <div class="flex justify-between items-center">
+                           <div class>
+                              <h2 class="font-semibold text-[#1F2937]">Name</h2>
+                              <p>৳2000 x 10</p>
+                           </div>
+                           <button class="btn btn-ghost tex">X</button>
+                        </div>
+                        <p class=" font-semibold text-xl ">৳500</p>
+                     </div> -->
+                  </div>
+
+                  <div id="emptyCartMessage" class="text-center py-4">
+                     <p>Your cart is empty.</p>
+                     <p>Add trees to get started.</p>
+                  </div>
+
+                  <hr class="bg-[#1F2937]/10">
+
+                  <!-- total amount -->
+                  <div
+                     class="flex justify-between items-center text-white bg-primaryColor rounded p-4 my-3">
+                     <span class="font-normal text-[16px]">Total</span>
+                     <span class="totalPrice">৳0</span>
+                  </div>
+
+               </div>
             </div>
          </div>
 
          <!-- product details modal -->
-         <button class="btn" onclick="treeModal.showModal()">open modal</button>
          <dialog id="treeModal" class="modal">
             <div class="modal-box">
                <div class="flex justify-between items-start mb-4">
@@ -78,7 +107,7 @@
                <!-- Modal Content -->
                <div class=" gap-6">
                   <!-- Plant Image -->
-                  <img id="modalImage" src="" alt="plant"
+                  <img id="modalImage" src alt="plant"
                      class="w-full !h-[250px] object-cover rounded-lg mb-12">
 
                   <!-- Plant Details -->
@@ -92,7 +121,8 @@
                         <span id="modalDescription"></span>
                      </p>
                      <div class="flex items-baseline gap-2 mb-6">
-                        <span class="text-3xl font-bold text-green-600">৳<span id="modalPrice">0</span></span>
+                        <span class="text-3xl font-bold text-green-600">৳<span
+                              id="modalPrice">0</span></span>
                      </div>
                   </div>
                </div>

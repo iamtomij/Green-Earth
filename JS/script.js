@@ -7,6 +7,10 @@ const modalCategory = document.getElementById("modalCategory")
 const modalPrice = document.getElementById("modalPrice")
 const modalDescription = document.getElementById("modalDescription")
 const modalTitle = document.getElementById("modalTitle")
+const cartContainer = document.getElementById("cartContainer")
+const totalPriceEl = document.querySelector(".totalPrice")
+const emptyCartMessage = document.getElementById("emptyCartMessage")
+const cart = []
 
 
 
@@ -140,7 +144,7 @@ function displayTrees(trees) {
                <div class="flex justify-between items-center">
                   <h2 class="text-[14px] font-semibold">৳${tree.price}</h2>
 
-                  <button class="btn bg-primaryColor text-white rounded-full">
+                  <button class="btn bg-primaryColor text-white rounded-full" onclick="addToCart(${tree.id}, '${tree.name}', ${tree.price})">
                      Add To Cart
                   </button>
                </div>
@@ -153,17 +157,92 @@ function displayTrees(trees) {
 }
 
 async function openTreeModal(treeId) {
-  const res = await fetch(
-    `https://openapi.programming-hero.com/api/plant/${treeId}`,
-  );
-  const data = await res.json();
-  const plantDetails = data.plants;
-  modalTitle.textContent = plantDetails.name;
-  modalImage.src = plantDetails.image;
-  modalCategory.textContent = plantDetails.category;
-  modalDescription.textContent = plantDetails.description;
-  modalPrice.textContent = plantDetails.price;
-  treeModal.showModal();
+   const res = await fetch(
+      `https://openapi.programming-hero.com/api/plant/${treeId}`,
+   );
+   const data = await res.json();
+   const plantDetails = data.plants;
+   modalTitle.textContent = plantDetails.name;
+   modalImage.src = plantDetails.image;
+   modalCategory.textContent = plantDetails.category;
+   modalDescription.textContent = plantDetails.description;
+   modalPrice.textContent = plantDetails.price;
+   treeModal.showModal();
+}
+
+
+function addToCart(id, name, price) {
+   const existingItem = cart.find(item => item.id === id)
+
+   if (existingItem) {
+      // 👉 আগেই থাকলে quantity বাড়াও
+      existingItem.quantity++
+   } else {
+      // 👉 না থাকলে নতুন item add
+      cart.push({
+         id,
+         name,
+         price,
+         quantity: 1
+      })
+   }
+
+   updateCartUI()
+}
+
+function updateCartUI() {
+   cartContainer.innerHTML = ""
+   if(cart.length === 0){
+      emptyCartMessage.classList.remove("hidden")
+      totalPriceEl.textContent = `৳${0}`
+      return
+   }
+   emptyCartMessage.classList.add("hidden")
+
+   let total = 0   // 👉 total variable
+
+   cart.forEach(item => {
+      const cartItem = document.createElement("div")
+
+      cartItem.className = "card card-body bg-slate-100"
+
+      const itemTotal = item.price * (item.quantity || 1)
+      total += itemTotal   // 👉 total add
+
+      cartItem.innerHTML = `                     
+         <div class="flex justify-between items-center">
+            <div>
+               <h2 class="font-semibold text-[#1F2937]">${item.name}</h2>
+               <p>৳${item.price} x Quantity: ${item.quantity || 1}</p>
+            </div>
+            <button 
+               class="btn btn-ghost "
+               onclick="removeFromCart(${item.id})"
+            >
+               X
+            </button>
+         </div>
+         <p class="font-semibold text-xl">৳${itemTotal}</p>
+      `
+
+      cartContainer.appendChild(cartItem)
+   })
+
+   // 👉 শেষে total update
+   totalPriceEl.textContent = `৳${total}`
+}
+
+function removeFromCart(id) {
+   const item = cart.find(item => item.id === id)
+
+   if (item.quantity > 1) {
+      item.quantity--
+   } else {
+      const index = cart.findIndex(i => i.id === id)
+      cart.splice(index, 1)
+   }
+
+   updateCartUI()
 }
 
 loadData()
