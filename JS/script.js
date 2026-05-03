@@ -14,9 +14,8 @@ const cart = []
 
 
 
-let allPlants = []   //  global data store
+let allPlants = []
 
-// ---------------- LOADING ----------------
 function showLoading() {
    loadingSpinner.classList.remove("hidden")
    loadingSpinner.classList.add("flex")
@@ -27,7 +26,6 @@ function hideLoading() {
    loadingSpinner.classList.remove("flex")
 }
 
-// ---------------- LOAD CATEGORIES ----------------
 async function loadData() {
    const res = await fetch("https://openapi.programming-hero.com/api/categories")
    const data = await res.json()
@@ -37,14 +35,12 @@ async function loadData() {
       btn.className = "btn btn-outline w-full rounded-md"
       btn.textContent = category.category_name
 
-      //  FIX: pass category name (not id)
       btn.onclick = () => selectCategory(category.category_name, btn)
 
       categoryContainer.appendChild(btn)
    })
 }
 
-// ---------------- CATEGORY FILTER ----------------
 async function selectCategory(categoryName, btn) {
 
    showLoading()
@@ -58,7 +54,6 @@ async function selectCategory(categoryName, btn) {
    btn.classList.add("bg-primaryColor", "text-white")
    btn.classList.remove("btn-outline")
 
-   //  API call once (or reuse global data)
    const res = await fetch("https://openapi.programming-hero.com/api/plants")
    const data = await res.json()
 
@@ -74,7 +69,6 @@ async function selectCategory(categoryName, btn) {
 
 
 
-// ---------------- LOAD ALL TREES ----------------
 async function loadTrees() {
    showLoading()
 
@@ -90,24 +84,20 @@ async function loadTrees() {
 }
 
 
-// ---------------- ALL TREES BUTTON (FIX) ----------------
 document.getElementById("allTreesbtn").addEventListener("click", () => {
 
    showLoading()
 
    const allBtns = document.querySelectorAll("#categoryContainer button")
 
-   // সব category button reset
    allBtns.forEach(b => {
       b.classList.remove("bg-primaryColor", "text-white")
       b.classList.add("btn-outline")
    })
 
-   // 👉 ALL button active style
    const allBtn = document.getElementById("allTreesbtn")
    allBtn.classList.add("bg-primaryColor", "text-white")
 
-   // 👉 সব data দেখাও (global store থেকে)
    treesContainer.innerHTML = ""
    displayTrees(allPlants)
 
@@ -115,7 +105,6 @@ document.getElementById("allTreesbtn").addEventListener("click", () => {
 })
 
 
-// ---------------- DISPLAY TREES ----------------
 function displayTrees(trees) {
 
    treesContainer.innerHTML = ""
@@ -175,10 +164,8 @@ function addToCart(id, name, price) {
    const existingItem = cart.find(item => item.id === id)
 
    if (existingItem) {
-      // 👉 আগেই থাকলে quantity বাড়াও
       existingItem.quantity++
    } else {
-      // 👉 না থাকলে নতুন item add
       cart.push({
          id,
          name,
@@ -192,14 +179,14 @@ function addToCart(id, name, price) {
 
 function updateCartUI() {
    cartContainer.innerHTML = ""
-   if(cart.length === 0){
+   if (cart.length === 0) {
       emptyCartMessage.classList.remove("hidden")
       totalPriceEl.textContent = `৳${0}`
       return
    }
    emptyCartMessage.classList.add("hidden")
 
-   let total = 0   // 👉 total variable
+   let total = 0
 
    cart.forEach(item => {
       const cartItem = document.createElement("div")
@@ -207,7 +194,7 @@ function updateCartUI() {
       cartItem.className = "card card-body bg-slate-100"
 
       const itemTotal = item.price * (item.quantity || 1)
-      total += itemTotal   // 👉 total add
+      total += itemTotal
 
       cartItem.innerHTML = `                     
          <div class="flex justify-between items-center">
@@ -228,7 +215,6 @@ function updateCartUI() {
       cartContainer.appendChild(cartItem)
    })
 
-   // 👉 শেষে total update
    totalPriceEl.textContent = `৳${total}`
 }
 
